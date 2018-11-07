@@ -26,7 +26,7 @@ const app = hapi.server({
 	host: 'localhost'
 });
 
-mongoose.connect('mongodb://storage:Pwd1234!@ds153093.mlab.com:53093/graphql-rest-comparison');
+mongoose.connect(process.env.MONGO_URL);
 
 mongoose.connection.once('open', () => {
 	console.log('connected to database');
