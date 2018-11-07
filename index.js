@@ -1,22 +1,32 @@
 const hapi = require('hapi');
 const mongoose = require('mongoose');
-const { graphqlHapi, graphiqlHapi } = require('apollo-server-hapi');
-const schema = require('./graphql/schema');
-const Painting = require('./models/Painting');
+const {
+	ApolloServer,
+} = require('apollo-server-hapi');
+const category = require('./models/category');
+const order = require('./models/order');
+const product = require('./models/product');
 
 /* swagger section */
 const Inert = require('inert');
 const Vision = require('vision');
 const HapiSwagger = require('hapi-swagger');
 const Pack = require('./package');
+const typeDefs = require('./graphql/schema');
+const resolvers = require('./graphql/resolver');
+
+const server = new ApolloServer({
+  typeDefs,
+  resolvers
+});
 
 
-const server = hapi.server({
+const app = hapi.server({
 	port: 4000,
 	host: 'localhost'
 });
 
-mongoose.connect('mongodb://indrek:test@ds231090.mlab.com:31090/powerful-api');
+mongoose.connect('mongodb://storage:Pwd1234!@ds153093.mlab.com:53093/graphql-rest-comparison');
 
 mongoose.connection.once('open', () => {
 	console.log('connected to database');
@@ -24,81 +34,66 @@ mongoose.connection.once('open', () => {
 
 const init = async () => {
 
-	await server.register([
+	await app.register([
 		Inert,
 		Vision,
 		{
 			plugin: HapiSwagger,
 			options: {
 				info: {
-					title: 'Paintings API Documentation',
+					title: 'API Documentation',
 					version: Pack.version
 				}
 			}
 		}
 	]);
 
-	await server.register({
-		plugin: graphiqlHapi,
-		options: {
-			path: '/graphiql',
-			graphiqlOptions: {
-				endpointURL: '/graphql'
-			},
-			route: {
-				cors: true
-			}
-		}
-	});
+	await app.register(require('hapi-response-time'));
 
-	await server.register({
-		plugin: graphqlHapi,
-		options: {
-			path: '/graphql',
-			graphqlOptions: {
-				schema
-			},
-			route: {
-				cors: true
-			}
-		}
-	});
-
-
-	server.route([
-		{
-			method: 'GET',
-			path: '/api/v1/paintings',
-			config: {
-				description: 'Get all the paintings',
-				tags: ['api', 'v1', 'painting']
-			},
-			handler: (req, reply) => {
-				return Painting.find();
-			}
+	app.route([{
+		method: 'GET',
+		path: '/api/v1/categories',
+		config: {
+			description: 'Get all categories',
+			tags: ['api', 'v1', 'category']
 		},
-		{
-			method: 'POST',
-			path: '/api/v1/paintings',
-			config: {
-				description: 'Get a specific painting by ID.',
-				tags: ['api', 'v1', 'painting']
-			},
-			handler: (req, reply) => {
-				const { name, url, technique } = req.payload;
-				const painting = new Painting({
-					name,
-					url,
-					technique
-				});
-
-				return painting.save();
-			}
+		handler: (req, reply) => {
+			return category.find();
 		}
-	]);
+	}]);
 
-	await server.start();
-	console.log(`Server running at: ${server.info.uri}`);
+	app.route([{
+		method: 'GET',
+		path: '/api/v1/orders',
+		config: {
+			description: 'Get all orders',
+			tags: ['api', 'v1', 'order']
+		},
+		handler: (req, reply) => {
+			return order.find();
+		}
+	}]);
+
+	app.route([{
+		method: 'GET',
+		path: '/api/v1/products',
+		config: {
+			description: 'Get all products',
+			tags: ['api', 'v1', 'producr']
+		},
+		handler: (req, reply) => {
+			return product.find();
+		}
+	}]);
+
+	await server.installSubscriptionHandlers(app.listener);
+
+	await server.applyMiddleware({
+		app,
+	});
+
+	await app.start();
+	console.log(`Server running at: ${app.info.uri}`);
 };
 
 process.on('unHandledRejection', (err) => {

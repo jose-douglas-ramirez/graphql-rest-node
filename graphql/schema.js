@@ -1,26 +1,52 @@
-const graphql = require('graphql');
-const PaintingType = require('./PaintingType');
-const Painting = require('./../models/Painting');
-
 const {
-		GraphQLObjectType,
-		GraphQLString,
-		GraphQLSchema
-} = graphql;
+	gql
+} = require('apollo-server-hapi');
 
-const RootQuery = new GraphQLObjectType({
-		name: 'RootQueryType',
-		fields: {
-				painting: {
-						type: PaintingType,
-						args: { id: { type: GraphQLString } },
-						resolve(parent, args){
-								return Painting.findById(args.id)
-						}
-				}
-		}
-});
+const typeDefs = gql`
+  type Query {
+    category(categoryID: Int): Category
+    product(productID: Int): Product 
+    order(orderID: Int): Order 
+  }
 
-module.exports = new GraphQLSchema({
-		query: RootQuery
-});
+  type Category {
+    categoryID: Int
+    name: String
+    description: String
+  }
+
+  type Product {
+    productID: Int
+    name: String
+    supplierID: Int
+    categoryID: Int
+    unitPrice: Int
+    unitsInStock: Int
+    unitsOnOrder: Int
+    reorderLevel: Int
+    discontinued: Boolean
+  }
+
+  type Details {
+    productID: Int,
+    unitPrice: Int,
+    quantity: Int,
+    discount: Int
+  }
+
+  type Order {
+    customerID: String,
+    employeeID: Int
+    orderDate: String
+    requiredDate: String
+    shippedDate: String
+    shipVia: Int
+    freight: Int
+    shipName: String
+    details: Details
+  }
+
+
+`;
+
+module.exports = typeDefs;
