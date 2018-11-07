@@ -22,7 +22,7 @@ const server = new ApolloServer({
 
 
 const app = hapi.server({
-	port: 4000,
+	port: process.env.PORT || 4000,
 	host: 'localhost'
 });
 
