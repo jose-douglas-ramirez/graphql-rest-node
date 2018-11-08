@@ -21,6 +21,7 @@ const server = new ApolloServer({
 
 const app = hapi.server({
 	port: process.env.PORT || 4001,
+	host: process.env.HOST || 'localhost',
 });
 
 mongoose.connect('mongodb://storage:Pwd1234!@ds153093.mlab.com:53093/graphql-rest-comparison');
