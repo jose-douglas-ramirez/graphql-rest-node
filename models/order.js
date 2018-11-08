@@ -1,11 +1,14 @@
 const mongoose = require('mongoose');
 const AddressSchema = require('./addressSchema');
+const ProductSchema = require('./product');
+const Schema = mongoose.Schema;
 
 const OrderDetailsSchema = new mongoose.Schema({
-  productID: Number,
+  productID: Schema.Types.Number,
   unitPrice: Number,
   quantity: Number,
   discount: Number,
+  product : { type: Schema.Types.Number, ref: 'Product' }
 }, {
   _id: false,
 });

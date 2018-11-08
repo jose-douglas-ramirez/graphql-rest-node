@@ -1,23 +1,24 @@
-const category = require('../models/category');
-const product = require('../models/product');
-const order = require('../models/order');
+const mongoContext = require('../dal/context');
 
 const resolvers = {
     Query: {
         category: async (root, args, context) => {
-            return await category.findOne({
-                categoryID: args.categoryID
-            });
+            return await mongoContext.getCategory(args.categoryID);
         },
         product: async (root, args, context) => {
-            return await product.findOne({
-                productID: args.productID
-            });
+            return await mongoContext.getProduct(args.productID);
         },
         order: async (root, args, context) => {
-            return await order.findOne({
-                orderID: args.orderID
-            });
+            return await mongoContext.getOrder(args.orderID);
+        },
+        categories: async (root, args, context) => {
+            return await mongoContext.getCategories();
+        },
+        products: async (root, args, context) => {
+            return await mongoContext.getProducts();
+        },
+        orders: async (root, args, context) => {
+            return await mongoContext.getOrders();
         }
     }
 };

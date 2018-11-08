@@ -1,4 +1,7 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const categorySchema = require('./category');
+
 const ProductSchema = new mongoose.Schema(
   {
     productID: {
@@ -9,6 +12,7 @@ const ProductSchema = new mongoose.Schema(
     name: String,
     supplierID: Number,
     categoryID: Number,
+    category: { type: Schema.Types.Number, ref: 'Category' },
     quantityPerUnit: String,
     unitPrice: {
       type: Number,
@@ -20,7 +24,4 @@ const ProductSchema = new mongoose.Schema(
     discontinued: Boolean,
   }
 );
-
-ProductSchema.index({ name: 1, supplierID: 1 }, { unique: true });
-
 module.exports = mongoose.model('Product', ProductSchema);

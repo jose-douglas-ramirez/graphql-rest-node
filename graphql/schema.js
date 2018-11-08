@@ -7,6 +7,9 @@ const typeDefs = gql`
     category(categoryID: Int): Category
     product(productID: Int): Product 
     order(orderID: Int): Order 
+    products: [Product] 
+    categories: [Category]
+    orders: [Order] 
   }
 
   type Category {
@@ -31,7 +34,8 @@ const typeDefs = gql`
     productID: Int,
     unitPrice: Int,
     quantity: Int,
-    discount: Int
+    discount: Int,
+    product: Product
   }
 
   type Order {

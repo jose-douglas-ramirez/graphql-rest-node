@@ -3,17 +3,15 @@ const mongoose = require('mongoose');
 const {
 	ApolloServer,
 } = require('apollo-server-hapi');
-const category = require('./models/category');
-const order = require('./models/order');
-const product = require('./models/product');
-
 /* swagger section */
 const Inert = require('inert');
 const Vision = require('vision');
+const Joi = require('joi');
 const HapiSwagger = require('hapi-swagger');
 const Pack = require('./package');
 const typeDefs = require('./graphql/schema');
 const resolvers = require('./graphql/resolver');
+const mongoContext = require('./dal/context');
 
 const server = new ApolloServer({
   typeDefs,
@@ -22,7 +20,7 @@ const server = new ApolloServer({
 
 
 const app = hapi.server({
-	port: process.env.PORT || 4000,
+	port: process.env.PORT || 4001,
 	host: 'localhost'
 });
 
@@ -52,13 +50,35 @@ const init = async () => {
 
 	app.route([{
 		method: 'GET',
-		path: '/api/v1/categories',
+		path: '/api/v1/categories/{id}',
 		config: {
-			description: 'Get all categories',
-			tags: ['api', 'v1', 'category']
+			description: 'Get categories by id',
+			tags: ['api', 'v1', 'category'],
+			validate: {
+				params: {
+					id: Joi.number()
+				}
+			}
 		},
-		handler: (req, reply) => {
-			return category.find();
+		handler: async (req, reply) => {
+			return await mongoContext.getCategory(req.params.id)
+		}
+	}]);
+
+	app.route([{
+		method: 'GET',
+		path: '/api/v1/orders/{id}',
+		config: {
+			description: 'Get orders by id',
+			tags: ['api', 'v1', 'order'],
+			validate: {
+				params: {
+					id: Joi.number()
+				}
+			}
+		},
+		handler: async (req, reply) => {
+			return await mongoContext.getOrder(req.params.id)
 		}
 	}]);
 
@@ -67,22 +87,27 @@ const init = async () => {
 		path: '/api/v1/orders',
 		config: {
 			description: 'Get all orders',
-			tags: ['api', 'v1', 'order']
+			tags: ['api', 'v1', 'orders']
 		},
-		handler: (req, reply) => {
-			return order.find();
+		handler: async (req, reply) => {
+			return await mongoContext.getOrders()
 		}
 	}]);
 
 	app.route([{
 		method: 'GET',
-		path: '/api/v1/products',
+		path: '/api/v1/products/{id}',
 		config: {
-			description: 'Get all products',
-			tags: ['api', 'v1', 'producr']
+			description: 'Get products by id',
+			tags: ['api', 'v1', 'producr'],
+			validate: {
+				params: {
+					id: Joi.number()
+				}
+			}
 		},
-		handler: (req, reply) => {
-			return product.find();
+		handler: async (req, reply) => {
+			return await mongoContext.getProduct(req.params.id)
 		}
 	}]);
 

@@ -17,6 +17,7 @@
     "hapi-response-time": "^2.0.0",
     "hapi-swagger": "^9.1.1",
     "inert": "^5.1.0",
+    "joi": "^14.0.4",
     "mongoose": "^5.1.1",
     "nodemon": "^1.17.4",
     "vision": "^5.3.2"
