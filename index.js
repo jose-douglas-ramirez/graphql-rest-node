@@ -3,6 +3,8 @@ const mongoose = require('mongoose');
 const {
 	ApolloServer,
 } = require('apollo-server-hapi');
+const Connection = require('tedious').Connection;
+const level1 = require('./MsSql/level1')
 /* swagger section */
 const Inert = require('inert');
 const Vision = require('vision');
@@ -23,7 +25,24 @@ const app = hapi.server({
 	port: process.env.PORT || 4001,
 });
 
-mongoose.connect(process.env.MONGODB);
+const config = {  
+	userName: 'sa_webuser',  
+	password: 'Aruba2018',  
+	server: 'daveseepersaddb.database.windows.net',  
+	// If you are on Microsoft Azure, you need this:  
+	options: {encrypt: true, database: 'graphql'}  
+};  
+const connection = new Connection(config);  
+connection.on('connect', function(err) {  
+// If no error, then good to proceed.  
+	connection.config.options.rowCollectionOnDone = true;
+	connection.config.options.rowCollectionOnRequestCompletion = true;
+	console.log("sql database Connected");  
+});  
+
+
+
+mongoose.connect(process.env.MONGODB || 'mongodb://storage:pwd12345!@ds153093.mlab.com:53093/graphql-rest-comparison');
 
 mongoose.connection.once('open', () => {
 	console.log('connected to database');
@@ -90,6 +109,18 @@ const init = async () => {
 		},
 		handler: async (req, reply) => {
 			return await mongoContext.getOrders()
+		}
+	}]);
+
+	app.route([{
+		method: 'GET',
+		path: '/api/v1/level1',
+		config: {
+			description: 'Get level 1',
+			tags: ['api', 'v1', 'level']
+		},
+		handler: async (req, reply) => {
+			return await level1.loadLevel1(connection);
 		}
 	}]);
 
