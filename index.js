@@ -4,8 +4,17 @@ const {
 	ApolloServer,
 } = require('apollo-server-hapi');
 const Connection = require('tedious').Connection;
+
 const level1 = require('./MsSql/level1');
 const level2 = require('./MsSql/level2');
+const level3 = require('./MsSql/level3');
+const level4 = require('./MsSql/level4');
+const level5 = require('./MsSql/level5');
+const level6 = require('./MsSql/level6');
+const level7 = require('./MsSql/level7');
+const level8 = require('./MsSql/level8');
+const level9 = require('./MsSql/level9');
+
 /* swagger section */
 const Inert = require('inert');
 const Vision = require('vision');
@@ -75,52 +84,6 @@ const init = async () => {
 
 	app.route([{
 		method: 'GET',
-		path: '/api/v1/categories/{id}',
-		config: {
-			description: 'Get categories by id',
-			tags: ['api', 'v1', 'category'],
-			validate: {
-				params: {
-					id: Joi.number()
-				}
-			}
-		},
-		handler: async (req, reply) => {
-			return await mongoContext.getCategory(req.params.id)
-		}
-	}]);
-
-	app.route([{
-		method: 'GET',
-		path: '/api/v1/orders/{id}',
-		config: {
-			description: 'Get orders by id',
-			tags: ['api', 'v1', 'order'],
-			validate: {
-				params: {
-					id: Joi.number()
-				}
-			}
-		},
-		handler: async (req, reply) => {
-			return await mongoContext.getOrder(req.params.id)
-		}
-	}]);
-
-	app.route([{
-		method: 'GET',
-		path: '/api/v1/orders',
-		config: {
-			description: 'Get all orders',
-			tags: ['api', 'v1', 'orders']
-		},
-		handler: async (req, reply) => {
-			return await mongoContext.getOrders()
-		}
-	}]);
-
-	app.route([{
-		method: 'GET',
 		path: '/api/v1/level1',
 		config: {
 			description: 'Get level 1',
@@ -145,20 +108,150 @@ const init = async () => {
 
 	app.route([{
 		method: 'GET',
-		path: '/api/v1/products/{id}',
+		path: '/api/v1/level3',
 		config: {
-			description: 'Get products by id',
-			tags: ['api', 'v1', 'producr'],
-			validate: {
-				params: {
-					id: Joi.number()
-				}
-			}
+			description: 'Get level 3',
+			tags: ['api', 'v1', 'level']
 		},
 		handler: async (req, reply) => {
-			return await mongoContext.getProduct(req.params.id)
+			return await level3.loadLevel3(connection);
 		}
 	}]);
+
+	app.route([{
+		method: 'GET',
+		path: '/api/v1/level4',
+		config: {
+			description: 'Get level 4',
+			tags: ['api', 'v1', 'level']
+		},
+		handler: async (req, reply) => {
+			return await level4.loadLevel4(connection);
+		}
+	}]);
+
+	app.route([{
+		method: 'GET',
+		path: '/api/v1/level5',
+		config: {
+			description: 'Get level 5',
+			tags: ['api', 'v1', 'level']
+		},
+		handler: async (req, reply) => {
+			return await level5.loadLevel5(connection);
+		}
+	}]);
+	
+	app.route([{
+		method: 'GET',
+		path: '/api/v1/level6',
+		config: {
+			description: 'Get level 6',
+			tags: ['api', 'v1', 'level']
+		},
+		handler: async (req, reply) => {
+			return await level6.loadLevel6(connection);
+		}
+	}]);
+	
+	app.route([{
+		method: 'GET',
+		path: '/api/v1/level7',
+		config: {
+			description: 'Get level 7',
+			tags: ['api', 'v1', 'level']
+		},
+		handler: async (req, reply) => {
+			return await level7.loadLevel7(connection);
+		}
+	}]);
+	
+	app.route([{
+		method: 'GET',
+		path: '/api/v1/level8',
+		config: {
+			description: 'Get level 8',
+			tags: ['api', 'v1', 'level']
+		},
+		handler: async (req, reply) => {
+			return await level8.loadLevel8(connection);
+		}
+	}]);
+	
+	app.route([{
+		method: 'GET',
+		path: '/api/v1/level9',
+		config: {
+			description: 'Get level 9',
+			tags: ['api', 'v1', 'level']
+		},
+		handler: async (req, reply) => {
+			return await level9.loadLevel9(connection);
+		}
+	}]);
+
+	// app.route([{
+	// 	method: 'GET',
+	// 	path: '/api/v1/categories/{id}',
+	// 	config: {
+	// 		description: 'Get categories by id',
+	// 		tags: ['api', 'v1', 'category'],
+	// 		validate: {
+	// 			params: {
+	// 				id: Joi.number()
+	// 			}
+	// 		}
+	// 	},
+	// 	handler: async (req, reply) => {
+	// 		return await mongoContext.getCategory(req.params.id)
+	// 	}
+	// }]);
+
+	// app.route([{
+	// 	method: 'GET',
+	// 	path: '/api/v1/orders/{id}',
+	// 	config: {
+	// 		description: 'Get orders by id',
+	// 		tags: ['api', 'v1', 'order'],
+	// 		validate: {
+	// 			params: {
+	// 				id: Joi.number()
+	// 			}
+	// 		}
+	// 	},
+	// 	handler: async (req, reply) => {
+	// 		return await mongoContext.getOrder(req.params.id)
+	// 	}
+	// }]);
+
+	// app.route([{
+	// 	method: 'GET',
+	// 	path: '/api/v1/orders',
+	// 	config: {
+	// 		description: 'Get all orders',
+	// 		tags: ['api', 'v1', 'orders']
+	// 	},
+	// 	handler: async (req, reply) => {
+	// 		return await mongoContext.getOrders()
+	// 	}
+	// }]);
+
+	// app.route([{
+	// 	method: 'GET',
+	// 	path: '/api/v1/products/{id}',
+	// 	config: {
+	// 		description: 'Get products by id',
+	// 		tags: ['api', 'v1', 'producr'],
+	// 		validate: {
+	// 			params: {
+	// 				id: Joi.number()
+	// 			}
+	// 		}
+	// 	},
+	// 	handler: async (req, reply) => {
+	// 		return await mongoContext.getProduct(req.params.id)
+	// 	}
+	// }]);
 
 	await server.installSubscriptionHandlers(app.listener);
 
