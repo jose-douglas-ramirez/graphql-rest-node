@@ -9,7 +9,9 @@ const typeDefs = gql`
     order(orderID: Int): Order 
     products: [Product] 
     categories: [Category]
-    orders: [Order] 
+    orders: [Order]
+    level1: [Level1]
+    level2: [Level2]
   }
 
   type Category {
@@ -48,6 +50,22 @@ const typeDefs = gql`
     freight: Int
     shipName: String
     details: Details
+  }
+
+  type Level1 {
+    pk1_ID: Int,
+    name: String,
+    description: String,
+  }
+
+  type Level2 {
+    pk1_ID: Int,
+    level1_name: String,
+    level1_description: String,
+    pk2_ID: Int,
+    fk1_ID: Int,
+    name: String,
+    description: String,
   }
 
 

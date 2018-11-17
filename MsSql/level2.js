@@ -1,10 +1,16 @@
 const Request = require('tedious').Request;  
 const TYPES = require('tedious').TYPES;  
 
-function loadLevel1(connection){
+const query = `SELECT dbo.Level1.pk1_ID, dbo.Level1.name AS level1_name, dbo.Level1.description AS level1_description, dbo.Level2.pk2_ID, dbo.Level2.fk1_ID, dbo.Level2.name, dbo.Level2.description
+ 
+FROM dbo.Level2 INNER JOIN
+ 
+dbo.Level1 ON dbo.Level2.fk1_ID = dbo.Level1.pk1_ID`;
+
+function loadLevel2(connection){
     return new Promise((resolve, reject)=>{
     let result = [];  
-    request = new Request("SELECT pk1_ID, name, description FROM dbo.Level1;", function(err, rowCount) {  
+    request = new Request(query, function(err, rowCount) {  
     if (err) {
         console.log(err);
         } else {
@@ -24,11 +30,16 @@ function loadLevel1(connection){
         });
         result.push(entity);    
     });  
+
+    request.on('done', function(rowCount, more) {  
+        resolve(rowCount);
+    });  
+    
     connection.execSql(request); 
 
   })
 }
 
 module.exports = {
-    loadLevel1
+    loadLevel2
 }

@@ -4,7 +4,8 @@ const {
 	ApolloServer,
 } = require('apollo-server-hapi');
 const Connection = require('tedious').Connection;
-const level1 = require('./MsSql/level1')
+const level1 = require('./MsSql/level1');
+const level2 = require('./MsSql/level2');
 /* swagger section */
 const Inert = require('inert');
 const Vision = require('vision');
@@ -12,18 +13,9 @@ const Joi = require('joi');
 const HapiSwagger = require('hapi-swagger');
 const Pack = require('./package');
 const typeDefs = require('./graphql/schema');
-const resolvers = require('./graphql/resolver');
 const mongoContext = require('./dal/context');
+let app, server;
 
-const server = new ApolloServer({
-  typeDefs,
-  resolvers
-});
-
-
-const app = hapi.server({
-	port: process.env.PORT || 4001,
-});
 
 const config = {  
 	userName: 'sa_webuser',  
@@ -37,7 +29,22 @@ connection.on('connect', function(err) {
 // If no error, then good to proceed.  
 	connection.config.options.rowCollectionOnDone = true;
 	connection.config.options.rowCollectionOnRequestCompletion = true;
+	process.env.msSqlConnection = connection;
 	console.log("sql database Connected");  
+
+	const resolvers = require('./graphql/resolver');
+	resolvers.setConnection(connection);
+	server = new ApolloServer({
+		typeDefs,
+		resolvers: resolvers.query
+	  });
+	  
+	  
+	app = hapi.server({
+		  port: process.env.PORT || 4001,
+	});
+
+	init();
 });  
 
 
@@ -126,6 +133,18 @@ const init = async () => {
 
 	app.route([{
 		method: 'GET',
+		path: '/api/v1/level2',
+		config: {
+			description: 'Get level 2',
+			tags: ['api', 'v1', 'level']
+		},
+		handler: async (req, reply) => {
+			return await level2.loadLevel2(connection);
+		}
+	}]);
+
+	app.route([{
+		method: 'GET',
 		path: '/api/v1/products/{id}',
 		config: {
 			description: 'Get products by id',
@@ -158,4 +177,3 @@ process.on('unHandledRejection', (err) => {
 	}
 });
 
-init();
