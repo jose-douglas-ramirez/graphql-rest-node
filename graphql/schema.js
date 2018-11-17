@@ -4,12 +4,6 @@ const {
 
 const typeDefs = gql`
   type Query {
-    category(categoryID: Int): Category
-    product(productID: Int): Product 
-    order(orderID: Int): Order 
-    products: [Product] 
-    categories: [Category]
-    orders: [Order]
     level1: [Level1]
     level2: [Level2]
     level3: [Level3]
