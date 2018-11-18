@@ -12,7 +12,7 @@ function loadLevel2(connection){
     if (err) {
         console.log(err);
         } else {
-        console.log(rowCount + ' rows');
+        // console.log(rowCount + ' rows');
         resolve(result);
         }
     });
