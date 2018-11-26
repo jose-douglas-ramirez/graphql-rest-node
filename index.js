@@ -28,7 +28,7 @@ let app, server;
 
 const config = {  
 	userName: 'sa_webuser',  
-	password: 'Aruba2018',  
+	password: 'Nova2014',  
 	server: 'daveseepersaddb.database.windows.net',  
 	// If you are on Microsoft Azure, you need this:  
 	options: {encrypt: true, database: 'graphql'}  
